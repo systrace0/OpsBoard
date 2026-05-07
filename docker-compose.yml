@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  # PostgreSQL-DB
+  db:
+    image: postgres:16-alpine
+    container_name: opsboard_db
+    environment:
+      POSTGRES_DB: opsboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Compose waits till DB is actually ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    # Build from last Dockerfile in current directory
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+
+    container_name: opsboard_app
+
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/opsboard
+      NODE_ENV: development
+
+    # Volume-Mount for Hot Reload
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    # Dependency - Only starts if DB is healthy
+    depends_on:
+      db:
+        condition: service_healthy
+
+    command: npm run dev
+
+volumes:
+  pgdata:
