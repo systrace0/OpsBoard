@@ -47,7 +47,7 @@ Thumbs.db
 next-env.d.ts
 
 # ── Docker ────────────────────────────────────────
-
 docker/volumes/
 
 Commands.md
+docs/
