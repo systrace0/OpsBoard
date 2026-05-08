@@ -22,7 +22,7 @@ export async function getUserProjects(userId: string) {
         eq(projectMembers.userId, userId),
       ),
     )
-    .where(isNull(projects.deleteAt));
+    .where(isNull(projects.deletedAt));
 
   return result.map((r) => r.project);
 }
@@ -32,7 +32,7 @@ export async function getProjectById(projectId: string, userId: string) {
   const result = await db
     .select()
     .from(projects)
-    .where(and(eq(projects.id, projectId), isNull(projects.deleteAt)))
+    .where(and(eq(projects.id, projectId), isNull(projects.deletedAt)))
     .limit(1);
 
   const project = result[0];
@@ -108,7 +108,7 @@ export async function archiveProject(projectId: string, userId: string) {
 
   const [project] = await db
     .update(projects)
-    .set({ deleteAt: new Date() })
+    .set({ deletedAt: new Date() })
     .where(eq(projects.id, projectId))
     .returning();
 

@@ -17,7 +17,7 @@ const timestamps = {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  deleteAt: timestamp("deleted_at", { withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 };
 
 // ── Users ─────────────────────────────────────────────────────────────────
