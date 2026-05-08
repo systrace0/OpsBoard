@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
+import { headers } from "next/headers";
 import { handleApiError } from "@/lib/errors";
+import { auth } from "@/lib/auth";
 import { createProjectSchema } from "@/lib/validations/project.schema";
 import { getUserProjects, createProject } from "@/lib/services/project.service";
 
@@ -8,10 +10,17 @@ import { getUserProjects, createProject } from "@/lib/services/project.service";
 // -----------------------------------------------------------------------------------------
 
 // GET /api/projects - all projects from logged User
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    // TODO: Get userId from the Session. Temporary hardcoded for testing
-    const userId = "test-user-id";
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
     const projects = await getUserProjects(userId);
 
     return Response.json({ projects });
@@ -23,7 +32,15 @@ export async function GET(request: NextRequest) {
 // POST /api/projects - create new project
 export async function POST(request: NextRequest) {
   try {
-    const userId = "test-user-id";
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
 
     // Parse body
     const body = await request.json();
