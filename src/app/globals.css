@@ -49,6 +49,7 @@
 }
 
 :root {
+  --dot-color: oklch(0 0 0 / 0.07);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -77,13 +78,15 @@
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.92 0 0);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
+  --dot-color: oklch(1 0 0 / 0.06);
+  --surface: oklch(0.07 0 0);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -126,5 +129,17 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+.dot-pattern {
+  background-color: var(--background);
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .dot-pattern {
+    --dot-color: color-mix(in oklab, currentColor 7%, transparent);
   }
 }

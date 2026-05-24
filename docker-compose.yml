@@ -23,28 +23,31 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
+      target: base
 
     container_name: opsboard_app
 
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
+      # Docker-specific overrides
       DATABASE_URL: postgres://postgres:postgres@db:5432/opsboard
       NODE_ENV: development
+      WATCHPACK_POLLING: true
 
     # Volume-Mount for Hot Reload
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/.next
 
     # Dependency - Only starts if DB is healthy
     depends_on:
       db:
         condition: service_healthy
 
-    command: npm run dev
+    command: sh -c "npm run db:migrate && npm run dev"
 
 volumes:
   pgdata:
