@@ -12,10 +12,5 @@ export default async function LoginPage() {
     redirect("/dashboard");
   }
 
-  return (
-    <div className="w-full max-w-md">
-      <h1 className="text-2xl font-semibold text-center mb-8 ">Anmelden</h1>
-      <LoginForm />
-    </div>
-  );
+  return <LoginForm />;
 }
